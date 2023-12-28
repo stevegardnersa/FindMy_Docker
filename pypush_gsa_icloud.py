@@ -12,7 +12,7 @@ from datetime import datetime
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from Crypto.Hash import SHA256
+from Cryptodome.Hash import SHA256
 
 # Created here so that it is consistent
 USER_ID = uuid.uuid4()
@@ -159,9 +159,9 @@ def generate_anisette_headers():
         import pyprovision
         from ctypes import c_ulonglong
         import secrets
-        adi = pyprovision.ADI("./anisette/")
-        adi.provisioning_path = "./anisette/"
-        device = pyprovision.Device("./anisette/device.json")
+        adi = pyprovision.ADI("./data/anisette/")
+        adi.provisioning_path = "./data/anisette/"
+        device = pyprovision.Device("./data/anisette/device.json")
         if not device.initialized:
             # Pretend to be a MacBook Pro
             device.server_friendly_description = "<MacBookPro13,2> <macOS;13.1;22C65> <com.apple.AuthKit/1 (com.apple.dt.Xcode/3594.4.19)>"

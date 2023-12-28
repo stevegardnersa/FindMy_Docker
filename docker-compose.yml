@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  findmy:
+    build: .
+    container_name: findmy_python
+    entrypoint: /bin/bash
+    command: "-c 'sleep 99999'"
+    stop_grace_period: 1s
+    volumes:
+      - ./data:/app/data:Z
+  anisette:
+    image: dadoum/anisette-v3-server
+    container_name: findmy_anisette
+    network_mode: 'service:findmy'
+    stop_grace_period: 1s
+    volumes:
+      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib:Z
+
+volumes:
+  anisette-v3_data:

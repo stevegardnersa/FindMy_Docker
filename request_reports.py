@@ -26,7 +26,7 @@ def decode_tag(data):
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status':status}
 
 def getAuth(regenerate=False, second_factor='sms'):
-    CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + "/auth.json"
+    CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + "/data/auth.json"
     if os.path.exists(CONFIG_PATH) and not regenerate:
         with open(CONFIG_PATH, "r") as f: j = json.load(f)
     else:
@@ -44,12 +44,12 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--trusteddevice', help='use trusted device for 2FA instead of SMS', action='store_true')
     args = parser.parse_args()
 
-    sq3db = sqlite3.connect(os.path.dirname(os.path.realpath(__file__)) + '/reports.db')
+    sq3db = sqlite3.connect(os.path.dirname(os.path.realpath(__file__)) + '/data/reports.db')
     sq3 = sq3db.cursor()
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(os.path.dirname(os.path.realpath(__file__)) + '/' + args.prefix + '*.keys'):
+    for keyfile in glob.glob(os.path.dirname(os.path.realpath(__file__)) + '/data/' + args.prefix + '*.keys'):
         # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ''

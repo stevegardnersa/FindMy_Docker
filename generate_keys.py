@@ -32,6 +32,8 @@ for i in range(args.nkeys):
     adv_b64 = base64.b64encode(adv_bytes).decode("ascii")
     s256_b64 = base64.b64encode(sha256(adv_bytes)).decode("ascii")
 
+    print('Adv key as C-type array:', ', '.join('0x{:02x}'.format(x) for x in adv_bytes))
+
     if args.verbose:
         print('%d)' % (i+1))
         print('Private key: %s' % priv_b64)
@@ -46,7 +48,7 @@ for i in range(args.nkeys):
         else:
             fname = '%s.keys' % s256_b64[:7]
 
-        with open(fname, 'w') as f:
+        with open('./data/' + fname, 'w') as f:
             f.write('Private key: %s\n' % priv_b64)
             f.write('Advertisement key: %s\n' % adv_b64)
             f.write('Hashed adv key: %s\n' % s256_b64)
