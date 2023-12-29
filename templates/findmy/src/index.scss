@@ -1,0 +1,30 @@
+body {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+#map, .leaflet-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+.my-tags {
+  display: inline-block;
+  position: fixed;
+  overflow: auto;
+  z-index: 1000000;
+  bottom: 1em;
+  right: 1em;
+  width: 300px;
+  height: 400px;
+  padding: 1em;
+
+  .tag-entry {
+    border-bottom: 1px solid #bbb;
+    padding: 0.5em 0;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
