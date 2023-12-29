@@ -1,39 +1,95 @@
-# FindMy
+# FindMy Server
+
 Query Apple's Find My network, based on all the hard work of https://github.com/seemoo-lab/openhaystack/ and @hatomist and @JJTech0130 and @Dadoum.
 
-This is version 2, which does not require a Mac anymore thanks to the awesome work in https://github.com/JJTech0130/pypush.
-Version 1 that can be run on Macs can still be found in the catalina (python2) and monterey (python3) branches.
+This is implementation if https://github.com/biemster/FindMy using a flask web server. The idea is to expose the service (in a local network) and use the data in another service. For example, you can use services like home assistant or traccar to call this server via a REST API, then retrieve the reported location and save it on the service.
 
-## Installation and initial setup
-Only a free Apple ID is required, with SMS 2FA properly setup. If you don't have any, follow one of the many guides found on the internet.
+> **WARNING**: do NOT expose this server to the public network. This service is meant to be used as a local docker service.
 
-1. Clone this repository and `anisette-v3-server`:
-```bash
-git clone https://github.com/biemster/FindMy
-git clone https://github.com/Dadoum/anisette-v3-server
+## Installation
+
+It's recommended to create a icloud burner account (i.e. with a disposable email). This way, you remand anonymous, while prevent apple from blocking for main account.
+
+**Make sure you have docker installed on your machine**
+
+1. Clone this repository
+2. Run `docker compose up -d`
+3. Run `docker exec --it findmy_server bash -c "cd /app && python setup.py"`
+4. Enter your icloud credentials
+
+## API endpoints
+
+The service can be accessed from `http://localhost:3033`
+
+### POST /generate_key
+
+This endpoint generates a new key pair that can be used to deploy to a device (for example, ESP32)
+
+Note:
+- Deploy the `adv_key` to the device
+- `ctype_byte_arr` is purely for convenient, in case you want to deploy using Arduino IDE. You don't need to save this field, it is actually a copy of `adv_key`.
+- `tag_id` is for internal usage (for example, tag a device on home assistant). You can modify it to whatever you want.
+
+No need request body
+
+Response body (example)
+
 ```
-2. Follow the installation instructions for `anisette-v3-server` and make sure it works.
-3. Create the database where the reports will be stored:
-```bash
-sqlite3 reports.db 'CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished INTEGER, payload TEXT, id TEXT, statusCode INTEGER, PRIMARY KEY(id_short,timestamp))'
+{
+    "adv_hash": "UeBXkttdj5u6NG87P0hU+PPjZLOAWuBn1NFQoigc5yU=",
+    "adv_key": "7oOwMvXN0jUcRnP8Mw1qwcRFuEq1n+AMAswOfA==",
+    "ctype_byte_arr": "0xee, 0x83, 0xb0, 0x32, 0xf5, 0xcd, 0xd2, 0x35, 0x1c, 0x46, 0x73, 0xfc, 0x33, 0x0d, 0x6a, 0xc1, 0xc4, 0x45, 0xb8, 0x4a, 0xb5, 0x9f, 0xe0, 0x0c, 0x02, 0xcc, 0x0e, 0x7c",
+    "priv_key": "60w1D2jebO4orxYgWeH9k9kSsbI0LF/6bz9V0g==",
+    "tag_id": "458cca9449bb3a59"
+}
 ```
 
-## Run
-1. `cd` into the `FindMy` directory and generate keys using `./generate_keys.py`.
-2. Deploy your advertisement keys on devices supported by OpenHaystack. The ESP32 firmware is a mirror of the OpenHaystack binary, the Lenze 17H66 is found in many 1$ tags obtained from Ali.
-An nRF51 firmware can be found here: https://github.com/dakhnod/FakeTag
-3. run
-```bash
-../anisette-v3-server/anisette-v3-server & ./request_reports.py ; killall anisette-v3-server
-```
-in the same directory as your `.keys` files.
+### POST /get_locations
 
-Alternatively to step 3 you could install `https://github.com/Dadoum/pyprovision` (first install `anisette-v3-server` though to get a nice D environment and the required android libs),
-make a folder `anisette` in your working directory and just run
-```bash
-./request_reports.py
-```
-The script should pick up the python bindings to provision and use that instead.
+This endpoint fetch the data from icloud server, decode it and return as an array.
 
-This current non-Mac workflow is not optimal yet, mainly because the anisette server is a bit of a workaround. A python solution for retrieving this is being
-developed in the pypush discord, please join there if you want to contribute!
+Note:
+- `hours` is optional, default to `24` (meaning get all reports in the last 24 hours)
+- `ctype_byte_arr` field is optional, the server do not use it.
+
+Request body (example)
+
+```
+{
+    "keys": [
+        {
+            "adv_hash": "UeBXkttdj5u6NG87P0hU+PPjZLOAWuBn1NFQoigc5yU=",
+            "adv_key": "7oOwMvXN0jUcRnP8Mw1qwcRFuEq1n+AMAswOfA==",
+            "priv_key": "60w1D2jebO4orxYgWeH9k9kSsbI0LF/6bz9V0g==",
+            "tag_id": "458cca9449bb3a59"
+        }
+    ],
+    "hours": 48
+}
+```
+
+Response body (example)
+
+```
+{
+    "results": [
+        {
+            "isodatetime": "2023-12-28T15:27:19",
+            "lat": 48.11111,
+            "lon": 2.11111,
+            "tag_id": "458cca9449bb3a59",
+            "timestamp": 1703777239
+        },
+        {
+            "isodatetime": "2023-12-28T15:05:09",
+            "lat": 48.11111,
+            "lon": 2.11111,
+            "tag_id": "458cca9449bb3a59",
+            "timestamp": 1703775909
+        },
+        ...
+        ...
+        ...
+    ]
+}
+```

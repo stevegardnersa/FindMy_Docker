@@ -3,12 +3,12 @@ version: '3'
 services:
   findmy:
     build: .
-    container_name: findmy_python
-    entrypoint: /bin/bash
-    command: "-c 'sleep 99999'"
+    container_name: findmy_server
     stop_grace_period: 1s
     volumes:
       - ./data:/app/data:Z
+    ports:
+      - 3033:3033
   anisette:
     image: dadoum/anisette-v3-server
     container_name: findmy_anisette
