@@ -17,6 +17,19 @@ It's recommended to create a icloud burner account (i.e. with a disposable email
 3. Run `docker exec --it findmy_server bash -c "cd /app && python setup.py"`
 4. Enter your icloud credentials
 
+## Web UI
+
+The project provides an **exprimental** web UI for testing the functions. Please not that it is not ready to be on production. Instead, you should use the API endpoints to connect with outside services.
+
+The Web UI can be accessed via `http://localhost:3033`
+
+TODO:
+- Add "export" and "edit" buttons
+- Auto zoom map
+- Show last update / list of all positions
+
+![](./screenshot1.png)
+
 ## API endpoints
 
 The service can be accessed from `http://localhost:3033`
