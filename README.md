@@ -14,7 +14,7 @@ It's recommended to create a icloud burner account (i.e. with a disposable email
 
 1. Clone this repository
 2. Run `docker compose up -d`
-3. Run `docker exec --it findmy_server bash -c "cd /app && python setup.py"`
+3. Run `docker exec -it findmy_server bash -c "cd /app && python setup.py"`
 4. Enter your icloud credentials
 
 ## Web UI
