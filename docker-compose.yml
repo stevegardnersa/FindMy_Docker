@@ -7,8 +7,9 @@ services:
     stop_grace_period: 1s
     volumes:
       - ./data:/app/data:Z
+      - ./templates:/app/templates
     ports:
-      - 8080:8080
+      - 3033:3033
   anisette:
     image: dadoum/anisette-v3-server
     container_name: findmy_anisette
