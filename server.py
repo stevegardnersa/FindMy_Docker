@@ -95,6 +95,7 @@ def get_locations():
     for report in res['results']:
       priv = int.from_bytes(base64.b64decode(table_priv_keys[report['id']]), 'big')
       data = base64.b64decode(report['payload'])
+      if len(data) > 88: data = data[:4] + data[5:]
       timestamp = int.from_bytes(data[0:4], 'big') + 978307200
       if timestamp < startdate:
         continue # skip this report if it's outside of search range
@@ -149,4 +150,4 @@ def root():
   return render_template('index.html')
 
 if __name__ == "__main__":
-  app.run(debug=DEBUG, host='0.0.0.0', port=3033, reload=True)
+  app.run(debug=DEBUG, host='0.0.0.0', port=3033)

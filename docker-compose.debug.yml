@@ -1,6 +1,9 @@
 services:
   findmy:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.debug
+    image: findmy_docker-debug
     container_name: findmy_server
     stop_grace_period: 1s
     logging:
@@ -13,6 +16,7 @@ services:
       - ./templates:/app/templates
     ports:
       - 3033:3033
+      - 5679:5679
   anisette:
     image: dadoum/anisette-v3-server
     container_name: findmy_anisette

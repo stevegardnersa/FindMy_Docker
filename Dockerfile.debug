@@ -5,4 +5,8 @@ RUN pip install pypush srp cryptography requests pbkdf2 pycryptodomex flask
 WORKDIR /app
 COPY . .
 
-CMD /app/server.py
+# EXPOSE 3033
+
+RUN pip install debugpy
+
+CMD ["python", "-m", "debugpy", "--listen", "0.0.0.0:5679", "server.py"]
