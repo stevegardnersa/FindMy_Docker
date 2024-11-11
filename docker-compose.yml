@@ -1,6 +1,7 @@
 services:
   findmy:
     build: .
+    restart: always
     container_name: findmy_server
     stop_grace_period: 1s
     logging:
@@ -10,11 +11,11 @@ services:
             max-size: 10m
     volumes:
       - ./data:/app/data:Z
-      - ./templates:/app/templates
     ports:
       - 3033:3033
   anisette:
     image: dadoum/anisette-v3-server
+    restart: always
     container_name: findmy_anisette
     network_mode: 'service:findmy'
     stop_grace_period: 1s
